@@ -1,0 +1,23 @@
+/* General */
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: rgb(33,37,41);
+  --primary-t: rgba(33,37,41,0);
+  --secondary: rgb(40,44,48);
+  --faded-grey: rgba(255,255,255,0.1);
+}
+
+body {
+  background-color: var(--primary); 
+  color: white;
+  font-family: 'Sen', sans-serif;
+}
+
+#navbarNavAltMarkup {
+  /* Position nav links at end of row */
+  justify-content: end;
+}
+
