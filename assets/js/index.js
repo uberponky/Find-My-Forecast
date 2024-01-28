@@ -103,7 +103,6 @@ $(function() {
             // Get relevant data from Forecast Object and store in forecastSnapshots array
             const forecastSnapshots = []
             for (let i = 1; i < 6; i++) {
-              // TODO - Find a way of getting it to do this in one line using .? or something similar
               let snapshot;
               // Try to get noon data
               if (snapshot = data.list.find((time) => time.dt == getUnixCode(i, 12))) {
