@@ -1,0 +1,86 @@
+/* General */
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: rgb(21, 23, 26);
+  --secondary: rgb(43, 46, 51);
+  --accent: rgb(147, 197, 160);
+}
+
+body {
+  font-family: 'Sen', sans-serif;
+}
+
+/* Navbar */
+nav {
+  background-color: var(--primary);
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+}
+
+.navbar-nav {
+  background-color: var(--secondary);
+}
+
+.navbar-nav span {
+  color: var(--accent);
+}
+
+.navbar-nav span:hover {
+  color: var(--accent);
+}
+
+nav i {
+  margin-right: .5em;
+  color: var(--accent);
+}
+
+/* Search Form */
+#search {
+  background-color: var(--secondary);
+}
+
+#search > .container {
+  padding-bottom: 5rem;
+}
+
+.form-group {
+  background-color: white;
+}
+
+#search input {
+  font-size: 1.5em;
+  border-width: 0;
+}
+
+#search i {
+  font-size: 1.5em;
+}
+
+/* Buttons */
+.btn:focus-visible {
+  outline: 2px solid black;
+}
+
+/* Forecast*/
+#forecast {
+  position: relative;
+  top: -2rem;
+}
+
+.current-date {
+  border-right: 1px solid lightgrey
+}
+
+.forecast-stats span {
+  font-size: 0.8rem;
+}
+
+/* Footer */
+section footer {
+  border-top: 1px solid lightgray;
+}
