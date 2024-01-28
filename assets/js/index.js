@@ -1,4 +1,20 @@
+// Create empty array for history, retrieve history from local storage if possible
+let history
+if (history = localStorage.getItem('history')) history = JSON.parse(history)
+else history = []
+
 $(function() {
+  // Current Day Selectors
+  const currentDate = $('#current-date')
+  const currentTemp = $('#current-temp')
+  const currentWind = $('#current-wind')
+  const currentHumidity = $('#current-humidity')
+  const currentIcon = $('#current-icon')
+  const currentLocation = $('#current-location')
+
+  // Search History
+  const historyResults = $('#search-history-results ul')
+
   // User Input
   const input = $('#search-input')
   const submit = $('#search-button')
@@ -9,13 +25,17 @@ $(function() {
   // API
   const API = 'fdeabcbe2a5f2a291f6081b9c648f575'
 
+  // Run initial functions to establish dynamic DOM elements
+  displaySearch(input)                                // Establish listeners to display search results
+  displaySearchHistory(historyResults, input, submit) // Display search history
+
   // Begin process of fetching API
   submit.on('click', function(e) {
     e.preventDefault()
     
     // Build geocoding URL
     const userInput = input.val()
-    const geocodingURL = `http://api.openweathermap.org/geo/1.0/direct?q=${userInput},GB&appid=${API}`
+    const geocodingURL = `https://api.openweathermap.org/geo/1.0/direct?q=${userInput},GB&appid=${API}`
 
     // Fetch longitude and latitude
     fetch(geocodingURL)
@@ -27,7 +47,7 @@ $(function() {
       const lon = data[0].lon
       const lat = data[0].lat
       const location = data[0].name
-
+      
       // Build current day forecast URL
       const currentURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API}`
 
@@ -37,13 +57,6 @@ $(function() {
         return response.json()
       })
       .then(function(data) {
-        // Current Day Selectors
-        const currentDate = $('#current-date')
-        const currentTemp = $('#current-temp')
-        const currentWind = $('#current-wind')
-        const currentHumidity = $('#current-humidity')
-        const currentIcon = $('#current-icon')
-        const currentLocation = $('#current-location')
 
         // Retrieve temp, wind, humidity and icon code
         let temp = (data.main.temp - 273.15).toFixed(2) + '°'
@@ -58,6 +71,10 @@ $(function() {
         currentWind.text(wind)
         currentHumidity.text(humidity)
         currentIcon.attr('src', iconURL(icon))
+
+        // Store location in history and display in search results
+        storeSearchHistory(location)
+        displaySearchHistory(historyResults, input, submit)
 
         // Build 5 day forecast URL
         const forecastURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API}`
@@ -114,20 +131,64 @@ $(function() {
           })
         })
       })
-    })
-
-  // Function to build icon source URL
-  function iconURL(iconCode) {
-    return `https://openweathermap.org/img/wn/${iconCode}@2x.png`
-  }
-
-  // Function to return unix code for given day / hour
-  function getUnixCode(day, hour) {
-    let unix = dayjs()
-      .add(day, 'd')
-      .hour(hour)
-      .startOf('hour')
-      .unix()
-    return unix;
-  }
+  })
 })
+
+// Function to build icon source URL
+function iconURL(iconCode) {
+  return `https://openweathermap.org/img/wn/${iconCode}@2x.png`
+}
+
+// Return unix code for given day / hour
+function getUnixCode(day, hour) {
+  let unix = dayjs()
+    .add(day, 'd')
+    .hour(hour)
+    .startOf('hour')
+    .unix()
+  return unix;
+}
+
+// Create list elements and append to history search results
+function displaySearchHistory(resultsEl, input, submit) {
+  resultsEl.empty()
+  let results = history.map(item => `
+    <li data-result="${item}">
+      <i class="fa-solid fa-location-dot"></i>
+      ${item}
+    </li>
+  `)
+  resultsEl.html(results.join(""))
+
+  // Add event listener to list items
+  $('#search-history-container li').on('click',{input, submit}, loadHistoryResult)
+}
+
+// Stringify history array and store in local storage
+function storeSearchHistory(location) {
+  const index = history.indexOf(location);
+  if (index != -1) history.splice(index, 1)
+  history.unshift(location)
+  localStorage.setItem('history', JSON.stringify(history))
+}
+
+// Set up event listeners to display and hide search results
+function displaySearch(input) {
+  // Display search results
+  const results = $('#search-history-results')
+  input.focus(() => {
+    results.removeClass('hidden')
+  })
+  
+  // Hide search results - add timeout to allow results event listener priority
+  input.blur(() => {
+    setTimeout(() => results.addClass('hidden'), 100)
+  })
+}
+
+// Load history result into search bar and initiate search
+function loadHistoryResult(event) {
+  let result = $(this).data('result')
+  event.data.input.val(result)
+  event.data.submit.trigger('click')
+}

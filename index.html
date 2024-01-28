@@ -39,13 +39,33 @@
     <div class="container pt-5">
       <row>
         <form id="search-form" class="form">
-          <div class="form-inline form-group">
-            <div class="input-group">
-              <input class="form-input weather-search col-11 px-5 py-3" type="text" id="search-input" placeholder="Search for a place"
-                aria-labelledby="form-heading" aria-controls="today forecast" />
-                <button type="submit" class="btn search-button d-flex justify-content-center align-items-center col-1" id="search-button" aria-label="submit search">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+          <div class="form-inline form-group input-group">
+            <input class="form-input weather-search col-11 px-5 py-3" type="text" id="search-input" placeholder="Search for a place"
+              aria-labelledby="form-heading" aria-controls="today forecast" autocomplete="off" spellcheck="false"/>
+              <button type="submit" class="btn search-button d-flex justify-content-center align-items-center col-1" id="search-button" aria-label="submit search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+          </div>
+          <div id="search-history-container" class="container">
+            <div class="row">
+              <div id="search-history-results" class="px-5 py-4 border hidden">
+                <span class="header">Search History</span>
+                <hr>
+                <ul>
+                  <li>
+                    <i class="fa-solid fa-location-dot"></i>
+                    London
+                  </li>
+                  <li>
+                    <i class="fa-solid fa-location-dot"></i>
+                    London
+                  </li>
+                  <li>
+                    <i class="fa-solid fa-location-dot"></i>
+                    London
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </form>
@@ -58,7 +78,7 @@
   <section class="container-fluid" id="forecast">
     <div class="container d-flex flex-column align-items-center gap-2">
       <!-- Forecast Today -->
-      <section id="today" class="col-10">
+      <section id="today" class="col-12 col-lg-10">
         <div class="card">
           <div class="card-header text-center">
             <h1 class="pt-1" id="current-location"></h1>
@@ -82,7 +102,7 @@
       </section>
       
       <!-- Forecast Five Day -->
-      <section id="five-day" class="col-10 d-flex flex-row gap-2">
+      <section id="five-day" class="col-12 col-lg-10 d-flex flex-row gap-2 flex-wrap flex-md-nowrap justify-content-center">
         <!-- Day One -->
         <div class="card flex-grow-1">
           <div class="card-header text-center" id="day1-date"></div>
