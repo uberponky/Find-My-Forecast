@@ -26,8 +26,8 @@ $(function() {
   const API = 'fdeabcbe2a5f2a291f6081b9c648f575'
 
   // Run initial functions to establish dynamic DOM elements
-  displaySearch(input)                    // Establish listeners to display search results
-  displaySearchHistory(historyResults)    // Display search history
+  displaySearch(input)                                // Establish listeners to display search results
+  displaySearchHistory(historyResults, input, submit) // Display search history
 
   // Begin process of fetching API
   submit.on('click', function(e) {
@@ -35,7 +35,7 @@ $(function() {
     
     // Build geocoding URL
     const userInput = input.val()
-    const geocodingURL = `http://api.openweathermap.org/geo/1.0/direct?q=${userInput},GB&appid=${API}`
+    const geocodingURL = `https://api.openweathermap.org/geo/1.0/direct?q=${userInput},GB&appid=${API}`
 
     // Fetch longitude and latitude
     fetch(geocodingURL)
@@ -72,8 +72,9 @@ $(function() {
         currentHumidity.text(humidity)
         currentIcon.attr('src', iconURL(icon))
 
-        // Store location in history
+        // Store location in history and display in search results
         storeSearchHistory(location)
+        displaySearchHistory(historyResults, input, submit)
 
         // Build 5 day forecast URL
         const forecastURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API}`
@@ -149,19 +150,25 @@ function getUnixCode(day, hour) {
 }
 
 // Create list elements and append to history search results
-function displaySearchHistory(resultsEl) {
+function displaySearchHistory(resultsEl, input, submit) {
+  resultsEl.empty()
   let results = history.map(item => `
-    <li>
+    <li data-result="${item}">
       <i class="fa-solid fa-location-dot"></i>
       ${item}
     </li>
   `)
   resultsEl.html(results.join(""))
+
+  // Add event listener to list items
+  $('#search-history-container li').on('click',{input, submit}, loadHistoryResult)
 }
 
 // Stringify history array and store in local storage
 function storeSearchHistory(location) {
-  history.push(location)
+  const index = history.indexOf(location);
+  if (index != -1) history.splice(index, 1)
+  history.unshift(location)
   localStorage.setItem('history', JSON.stringify(history))
 }
 
@@ -172,8 +179,16 @@ function displaySearch(input) {
   input.focus(() => {
     results.removeClass('hidden')
   })
-
+  
+  // Hide search results - add timeout to allow results event listener priority
   input.blur(() => {
-    results.addClass('hidden')
+    setTimeout(() => results.addClass('hidden'), 100)
   })
+}
+
+// Load history result into search bar and initiate search
+function loadHistoryResult(event) {
+  let result = $(this).data('result')
+  event.data.input.val(result)
+  event.data.submit.trigger('click')
 }

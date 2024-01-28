@@ -87,6 +87,10 @@ nav i {
   padding-right: .5em;
 }
 
+#search-history-results li {
+  cursor: pointer;
+}
+
 
 /* Buttons */
 .btn:focus-visible {
