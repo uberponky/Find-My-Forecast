@@ -84,11 +84,17 @@ nav i {
 }
 
 #search-history-results i {
-  padding-right: .5em;
+  padding-right: .2rem;
 }
 
 #search-history-results li {
   cursor: pointer;
+  padding: 0.3rem 0.5rem 0.2rem 0.5rem;
+  border-radius: 5px;
+}
+
+#search-history-results li:hover {
+  background-color: rgba(0,0,0,0.05);
 }
 
 
