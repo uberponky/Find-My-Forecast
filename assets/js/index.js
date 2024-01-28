@@ -32,9 +32,15 @@ $(function() {
   // Begin process of fetching API
   submit.on('click', function(e) {
     e.preventDefault()
-    
-    // Build geocoding URL
+  
+    // Basic input validation
     const userInput = input.val()
+    if (userInput.length < 1) {
+      alert('Please enter your location before pressing submit')
+      return
+    }
+
+    // Build geocoding URL
     const geocodingURL = `https://api.openweathermap.org/geo/1.0/direct?q=${userInput},GB&appid=${API}`
 
     // Fetch longitude and latitude
@@ -43,6 +49,12 @@ $(function() {
       return response.json()
     })
     .then(function (data) {
+      // Validate if a location was found
+      if (data.length == 0) {
+        alert('No location was found. Please try again.')
+        return
+      }
+
       // Retrieve longitude and latitude from data
       const lon = data[0].lon
       const lat = data[0].lat
